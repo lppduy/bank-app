@@ -1,13 +1,13 @@
-package com.lppduy.bankapp;
+package com.lppduy.bank;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class BankappApplication {
+public class BankApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(BankappApplication.class, args);
+        SpringApplication.run(BankApplication.class, args);
     }
 
 }
