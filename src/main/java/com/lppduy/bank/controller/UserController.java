@@ -2,6 +2,7 @@ package com.lppduy.bank.controller;
 
 import com.lppduy.bank.dto.BankResponse;
 import com.lppduy.bank.dto.UserRequest;
+import com.lppduy.bank.service.EmailService;
 import com.lppduy.bank.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;

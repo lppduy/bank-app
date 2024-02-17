@@ -2,9 +2,11 @@ package com.lppduy.bank.service.impl;
 
 import com.lppduy.bank.dto.AccountInfo;
 import com.lppduy.bank.dto.BankResponse;
+import com.lppduy.bank.dto.EmailDetails;
 import com.lppduy.bank.dto.UserRequest;
 import com.lppduy.bank.entity.User;
 import com.lppduy.bank.repository.UserRepository;
+import com.lppduy.bank.service.EmailService;
 import com.lppduy.bank.service.UserService;
 import com.lppduy.bank.utils.AccountUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +20,12 @@ public class UserServiceImpl implements UserService {
 
     UserRepository userRepository;
 
+    EmailService emailService;
+
     @Autowired
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository,  EmailService emailService) {
         this.userRepository = userRepository;
+        this.emailService = emailService;
     }
 
     @Override
@@ -54,6 +59,17 @@ public class UserServiceImpl implements UserService {
         }
 
         User savedUser = userRepository.save(newUser);
+
+        EmailDetails emailDetails = EmailDetails.builder()
+                .recipient(savedUser.getEmail())
+                .subject("ACCOUNT CREATION")
+                .messageBody("Congratulations! You account has been created successfully!\n" +
+                        "You account details:\n" +
+                        "Account Name: " + savedUser.getFirstName() +" " + savedUser.getLastName() + " " + savedUser.getOtherName() +
+                        "\nAccount Number: " + savedUser.getAccountNumber() + "\n")
+                .build();
+
+        emailService.sendEmailAlert(emailDetails);
 
         return BankResponse.builder()
                 .responseCode(AccountUtils.ACCOUNT_CREATION_CODE)
