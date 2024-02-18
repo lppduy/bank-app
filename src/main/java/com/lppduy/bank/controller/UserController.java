@@ -1,9 +1,6 @@
 package com.lppduy.bank.controller;
 
-import com.lppduy.bank.dto.BankResponse;
-import com.lppduy.bank.dto.CreditDebitRequest;
-import com.lppduy.bank.dto.EnquiryRequest;
-import com.lppduy.bank.dto.UserRequest;
+import com.lppduy.bank.dto.*;
 import com.lppduy.bank.service.EmailService;
 import com.lppduy.bank.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,5 +38,9 @@ public class UserController {
     @PostMapping("/debit")
     public BankResponse debitAccount(@RequestBody CreditDebitRequest request) {
         return userService.debitAccount(request);
+    }
+    @PostMapping("/transfer")
+    public BankResponse transfer(@RequestBody TransferRequest request) {
+        return userService.transfer(request);
     }
 }
