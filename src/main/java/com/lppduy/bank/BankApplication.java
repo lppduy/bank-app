@@ -35,3 +35,5 @@ public class BankApplication {
     }
 
 }
+
+// http://localhost:9192/swagger-ui/index.html#/
