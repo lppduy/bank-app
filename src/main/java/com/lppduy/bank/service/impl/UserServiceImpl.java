@@ -7,28 +7,50 @@ import com.lppduy.bank.service.EmailService;
 import com.lppduy.bank.service.TransactionService;
 import com.lppduy.bank.service.UserService;
 import com.lppduy.bank.utils.AccountUtils;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
 
-    UserRepository userRepository;
-
-    EmailService emailService;
-
-    TransactionService transactionService;
-
     @Autowired
-    public UserServiceImpl(UserRepository userRepository,  EmailService emailService, TransactionService transactionService) {
-        this.userRepository = userRepository;
-        this.emailService = emailService;
-        this.transactionService = transactionService;
+    UserRepository userRepository;
+    @Autowired
+    EmailService emailService;
+    @Autowired
+    TransactionService transactionService;
+    @Autowired
+    PasswordEncoder passwordEncoder;
+
+
+    @Override
+    public List<AccountInfo> getAllAccount() {
+
+        List<User> userList = userRepository.findAll();
+
+        List<AccountInfo> accountInfoList = userList
+                .stream()
+                .map(user ->
+                        AccountInfo.builder()
+                                .accountName(user.getFirstName() +" " + user.getLastName() + " " + user.getOtherName())
+                                .accountNumber(user.getAccountNumber())
+                                .accountBalance(user.getAccountBalance())
+                                .build()
+                )
+                .toList();
+
+        return accountInfoList;
     }
+
 
     @Override
     public BankResponse createAccount(UserRequest userRequest) {
@@ -51,6 +73,7 @@ public class UserServiceImpl implements UserService {
                 .accountNumber(AccountUtils.generateAccountNumber())
                 .accountBalance(BigDecimal.ZERO)
                 .email(userRequest.getEmail())
+                .password(passwordEncoder.encode(userRequest.getPassword()))
                 .phoneNumber(userRequest.getPhoneNumber())
                 .alternativePhoneNumber(userRequest.getAlternativePhoneNumber())
                 .status("ACTIVE")
@@ -281,5 +304,6 @@ public class UserServiceImpl implements UserService {
                 .accountInfo(null)
                 .build();
     }
+
 
 }
